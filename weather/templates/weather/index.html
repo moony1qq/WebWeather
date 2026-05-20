@@ -1,0 +1,135 @@
+{% extends "weather/base.html" %}
+{% block title %}WeatherApp — Home{% endblock %}
+{% block content %}
+<div class="row g-4">
+
+  <div class="col-lg-8">
+    <div class="card mb-4">
+      <div class="card-header py-3">
+        <h6 class="mb-0 fw-semibold" style="color:var(--latte-brand);">
+          <i class="bi bi-search me-2"></i>Search weather
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <form method="post" action="{% url 'current_weather' %}">
+              {% csrf_token %}
+              <p class="section-label">Current weather</p>
+              <div class="input-group">
+                <input type="text" name="city" class="form-control" placeholder="City name..." required/>
+                <button class="btn btn-accent" type="submit" title="Get current weather">
+                  <i class="bi bi-sun"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-6">
+            <form method="post" action="{% url 'forecast' %}">
+              {% csrf_token %}
+              <p class="section-label">5-day forecast</p>
+              <div class="input-group">
+                <input type="text" name="city" class="form-control" placeholder="City name..." required/>
+                <button class="btn btn-teal" type="submit" title="Get forecast">
+                  <i class="bi bi-calendar-week"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-semibold" style="color:var(--latte-brand);">
+          <i class="bi bi-clock-history me-2"></i>Recent searches
+        </h6>
+        <a href="{% url 'history' %}" class="btn btn-sm btn-outline-latte">View all</a>
+      </div>
+      {% if history %}
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th class="ps-3">City</th>
+              <th>Type</th>
+              <th>Temp</th>
+              <th>When</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in history %}
+            <tr>
+              <td class="ps-3 fw-semibold">
+                {{ item.city }}{% if item.country %}<span style="color:var(--latte-sub); font-weight:400;">, {{ item.country }}</span>{% endif %}
+              </td>
+              <td>
+                {% if item.search_type == "current" %}
+                  <span class="badge-current">Current</span>
+                {% else %}
+                  <span class="badge-forecast">Forecast</span>
+                {% endif %}
+              </td>
+              <td>{% if item.temperature %}{{ item.temperature|floatformat:1 }}°C{% else %}<span style="color:var(--latte-muted);">—</span>{% endif %}</td>
+              <td style="color:var(--latte-sub); font-size:0.83rem;">{{ item.searched_at|date:"d.m H:i" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="card-body text-center py-5">
+        <i class="bi bi-search" style="font-size:2rem; color:var(--latte-muted);"></i>
+        <p class="mt-2 mb-0" style="color:var(--latte-sub);">No searches yet. Try searching for a city above.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header py-3">
+        <h6 class="mb-0 fw-semibold" style="color:var(--latte-brand);">
+          <i class="bi bi-star me-2" style="color:#B8860B;"></i>Favorite cities
+        </h6>
+      </div>
+      <div class="card-body">
+        {% if favorites %}
+          {% for fav in favorites %}
+          <div class="fav-item">
+            <span style="font-size:0.92rem;">
+              <i class="bi bi-geo-alt me-1" style="color:var(--latte-accent);"></i>
+              <strong>{{ fav.city }}</strong>
+              {% if fav.country %}<span style="color:var(--latte-sub); font-size:0.82rem;">, {{ fav.country }}</span>{% endif %}
+            </span>
+            <div class="d-flex gap-1">
+              <form method="post" action="{% url 'current_weather' %}">
+                {% csrf_token %}
+                <input type="hidden" name="city" value="{{ fav.city }}"/>
+                <button class="btn btn-sm btn-outline-latte" title="Quick weather">
+                  <i class="bi bi-sun"></i>
+                </button>
+              </form>
+              <a href="{% url 'remove_favorite' fav.pk %}" class="btn btn-sm"
+                style="border:1px solid #E4B5A2; color:#B5533C; background:transparent;"
+                title="Remove">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+        <div class="text-center py-4">
+          <i class="bi bi-star" style="font-size:1.8rem; color:var(--latte-muted);"></i>
+          <p class="mt-2 mb-0" style="color:var(--latte-sub); font-size:0.88rem;">
+            No favorites yet.<br>Star a city after searching it!
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

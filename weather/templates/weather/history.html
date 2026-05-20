@@ -1,0 +1,53 @@
+{% extends "weather/base.html" %}
+{% block title %}Search History{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 fw-semibold" style="color:var(--latte-brand);">
+      <i class="bi bi-clock-history me-2"></i>Your search history
+    </h6>
+    <a href="{% url 'index' %}" class="btn btn-sm btn-outline-latte">← Back</a>
+  </div>
+  <div class="card-body p-0">
+    {% if history %}
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th class="ps-3">#</th>
+          <th>City</th>
+          <th>Type</th>
+          <th>Temperature</th>
+          <th>Description</th>
+          <th>Date & time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in history %}
+        <tr>
+          <td class="ps-3" style="color:var(--latte-muted);">{{ forloop.counter }}</td>
+          <td class="fw-semibold">
+            {{ item.city }}{% if item.country %}<span style="color:var(--latte-sub); font-weight:400;">, {{ item.country }}</span>{% endif %}
+          </td>
+          <td>
+            {% if item.search_type == "current" %}
+              <span class="badge-current">Current</span>
+            {% else %}
+              <span class="badge-forecast">Forecast</span>
+            {% endif %}
+          </td>
+          <td>{% if item.temperature %}{{ item.temperature|floatformat:1 }}°C{% else %}<span style="color:var(--latte-muted);">—</span>{% endif %}</td>
+          <td style="color:var(--latte-sub);">{{ item.description|default:"—" }}</td>
+          <td style="color:var(--latte-sub); font-size:0.83rem;">{{ item.searched_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-clock-history" style="font-size:2rem; color:var(--latte-muted);"></i>
+      <p class="mt-2 mb-0" style="color:var(--latte-sub);">No searches yet.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

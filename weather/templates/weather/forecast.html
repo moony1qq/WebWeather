@@ -1,0 +1,42 @@
+{% extends "weather/base.html" %}
+{% block title %}{{ forecast.city }} — Forecast{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card shadow-sm">
+      <div class="card-header py-3">
+        <p class="section-label mb-0">5-day forecast</p>
+        <h4 class="fw-semibold mb-0" style="color:var(--latte-brand);">
+          {{ forecast.city }}{% if forecast.country %}<span style="color:var(--latte-sub); font-size:1rem; font-weight:400;">, {{ forecast.country }}</span>{% endif %}
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-column gap-2">
+          {% for day in forecast.days %}
+          <div class="forecast-row d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div style="min-width:120px;">
+              <div class="fw-semibold" style="color:var(--latte-brand);">{{ day.weekday }}</div>
+              <div style="color:var(--latte-sub); font-size:0.83rem;">{{ day.date }}</div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-grow-1">
+              <img src="https://openweathermap.org/img/wn/{{ day.icon }}.png"
+                   width="38" height="38" alt="{{ day.description }}"/>
+              <span style="color:var(--latte-sub); font-size:0.9rem;">{{ day.description }}</span>
+            </div>
+            <div class="text-end">
+              <span style="font-size:1.15rem; font-weight:600; color:var(--latte-brand);">{{ day.temp_max|floatformat:0 }}°</span>
+              <span style="color:var(--latte-muted); margin-left:4px;">/ {{ day.temp_min|floatformat:0 }}°</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-3">
+      <a href="{% url 'index' %}" class="btn btn-outline-latte">
+        <i class="bi bi-arrow-left me-1"></i>Back to search
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

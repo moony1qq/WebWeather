@@ -1,0 +1,39 @@
+{% extends "weather/base.html" %}
+{% block title %}Login — WeatherApp{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5 col-lg-4">
+    <div class="text-center mb-4">
+      <i class="bi bi-cloud-sun" style="font-size:2.5rem; color:var(--latte-accent);"></i>
+      <h4 class="mt-2 fw-semibold" style="color:var(--latte-brand);">Welcome back</h4>
+      <p style="color:var(--latte-sub); font-size:0.9rem;">Sign in to your account</p>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        {% if error %}
+        <div class="alert alert-danger py-2">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" placeholder="Your username" autofocus required/>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Your password" required/>
+          </div>
+          <button type="submit" class="btn btn-accent w-100 fw-semibold">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Sign in
+          </button>
+        </form>
+        <hr style="border-color:var(--latte-border); margin: 1.2rem 0;"/>
+        <p class="text-center mb-0" style="font-size:0.88rem; color:var(--latte-sub);">
+          Don't have an account?
+          <a href="{% url 'register' %}" style="color:var(--latte-accent); text-decoration:none;">Register</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

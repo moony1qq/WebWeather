@@ -1,0 +1,62 @@
+{% extends "weather/base.html" %}
+{% block title %}{{ weather.city }} — Weather{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm text-center">
+      <div class="card-body py-5">
+        <p class="section-label mb-1">Current weather</p>
+        <h2 class="fw-semibold" style="color:var(--latte-brand);">
+          {{ weather.city }}{% if weather.country %}<span style="color:var(--latte-sub); font-size:1.1rem; font-weight:400;">, {{ weather.country }}</span>{% endif %}
+        </h2>
+        <img src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png"
+             alt="{{ weather.description }}" width="80" height="80"/>
+        <div class="weather-temp my-2">{{ weather.temperature|floatformat:1 }}°C</div>
+        <p style="color:var(--latte-sub); font-size:1.05rem; margin-bottom:2rem;">{{ weather.description }}</p>
+
+        <div class="row g-3 mb-4">
+          <div class="col-4">
+            <div class="stat-card">
+              <div class="label">Feels like</div>
+              <div class="value">{{ weather.feels_like|floatformat:1 }}°</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-card">
+              <div class="label">Humidity</div>
+              <div class="value">{{ weather.humidity }}%</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-card">
+              <div class="label">Wind</div>
+              <div class="value">{{ weather.wind_speed }} <span style="font-size:0.9rem;">m/s</span></div>
+            </div>
+          </div>
+        </div>
+
+        {% if is_favorite %}
+          <span style="background:#EDE0D0; color:#6B4423; border-radius:20px; padding:6px 16px; font-size:0.88rem;">
+            <i class="bi bi-star-fill me-1" style="color:#B8860B;"></i>In favorites
+          </span>
+        {% else %}
+          <form method="post" action="{% url 'add_favorite' %}" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="city" value="{{ weather.city }}"/>
+            <input type="hidden" name="country" value="{{ weather.country }}"/>
+            <input type="hidden" name="next" value="{% url 'index' %}"/>
+            <button type="submit" class="btn btn-sm btn-outline-latte">
+              <i class="bi bi-star me-1" style="color:#B8860B;"></i>Add to favorites
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+    <div class="text-center mt-3">
+      <a href="{% url 'index' %}" class="btn btn-outline-latte">
+        <i class="bi bi-arrow-left me-1"></i>Back to search
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

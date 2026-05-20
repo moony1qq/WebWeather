@@ -1,0 +1,37 @@
+{% extends "weather/base.html" %}
+{% block title %}Register — WeatherApp{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5 col-lg-4">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-plus" style="font-size:2.5rem; color:var(--latte-accent);"></i>
+      <h4 class="mt-2 fw-semibold" style="color:var(--latte-brand);">Create account</h4>
+      <p style="color:var(--latte-sub); font-size:0.9rem;">Join WeatherApp today</p>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+            <div style="color:#B5533C; font-size:0.82rem; margin-top:4px;">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-accent w-100 fw-semibold mt-1">
+            <i class="bi bi-person-check me-2"></i>Create account
+          </button>
+        </form>
+        <hr style="border-color:var(--latte-border); margin: 1.2rem 0;"/>
+        <p class="text-center mb-0" style="font-size:0.88rem; color:var(--latte-sub);">
+          Already have an account?
+          <a href="{% url 'login' %}" style="color:var(--latte-accent); text-decoration:none;">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
